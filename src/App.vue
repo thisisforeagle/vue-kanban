@@ -1,10 +1,8 @@
 <template>
   <div id="app">
     <section class="section">
-      <h4>
-        Vue adoptation of Ettric's
-        <a href="//codepen.io/ettrics/pen/QbPEeg">Codepen</a>
-      </h4>
+      <h4>Vue.js Kanban Board</h4>
+      <a class="btn btn-success" data-toggle="modal" data-target="#newModal">+ Add new block</a>
     </section>
     <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock">
       <div v-for="stage in statuses" :slot="stage" :key="stage">
@@ -14,22 +12,39 @@
         </h2>
       </div>
       <div v-for="item in blocks" :slot="item.id" :key="item.id">
-        <div>
-          <strong>id:</strong> {{ item.id }}
+        <div class="title">
+          <strong>{{ item.title }}</strong>
         </div>
-        <div>
-          {{ item.title }}
+        <div class="description">
+          {{ item.description }}
         </div>
-      </div>
-      <div v-for="stage in statuses" :key="stage" :slot="`footer-${stage}`">
-          <a href="" @click.prevent="() => addBlock(stage)">+ Add new block</a>
       </div>
     </Kanban>
+    <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content m-3">
+          <div class="modal-body">
+            <h3>Add a New Task</h3>
+            <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Title</label>
+                <input v-model="newblock.title" type="text" class="form-control" id="exampleInputEmail1" placeholder="Give the task a name">
+              </div>
+              <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea v-model="newblock.description" type="text" class="form-control" id="Description" placeholder="Describe what needs to be done"></textarea>
+              </div>
+            </form>
+            <button class="btn btn-default" @click="addBlock">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import faker from 'faker';
+// import faker from 'faker';
 import { debounce } from 'lodash';
 import Kanban from './components/Kanban';
 
@@ -40,123 +55,49 @@ export default {
   },
   data() {
     return {
-      statuses: ['on-hold', 'in-progress', 'needs-review', 'approved'],
+      statuses: ['new', 'in-progress', 'needs-review', 'completed'],
       blocks: [],
+      newblock: {
+        title: '',
+        description: '',
+      },
     };
   },
   mounted() {
-    for (let i = 0; i <= 10; i += 1) {
-      this.blocks.push({
-        id: i,
-        status: this.statuses[Math.floor(Math.random() * 4)],
-        title: faker.company.bs(),
-      });
+    if (window.localStorage.KanbanBlocks) {
+      this.blocks = JSON.parse(window.localStorage.KanbanBlocks);
     }
   },
 
   methods: {
     updateBlock: debounce(function (id, status) {
       this.blocks.find(b => b.id === Number(id)).status = status;
+      this.store();
     }, 500),
-    addBlock: debounce(function (stage) {
+    addBlock: debounce(function () {
       this.blocks.push({
         id: this.blocks.length,
-        status: stage,
-        title: faker.company.bs(),
+        status: 'new',
+        title: this.newblock.title,
+        description: this.newblock.description,
       });
+      this.clearNewBlock();
+      this.store();
     }, 500),
+    store() {
+      window.localStorage.KanbanBlocks = JSON.stringify(this.blocks);
+    },
+    clearNewBlock() {
+      this.newblock = {
+        title: '',
+        description: '',
+      };
+    },
   },
 };
 </script>
 
 <style lang="scss">
   @import './assets/kanban.scss';
-
-  $on-hold: #FB7D44;
-  $in-progress: #2A92BF;
-  $needs-review: #F4CE46;
-  $approved: #00B961;
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #33363D;
-    color: white;
-    font-family: 'Lato';
-    font-weight: 300;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .drag-column {
-    .drag-column-header > div {
-      width: 100%;
-      h2 > a {
-        float: right;
-      }
-    }
-
-    .drag-column-footer > div {
-        margin-left: 10px;
-        a {
-            text-decoration: none;
-            color: white;
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
-
-    &-on-hold {
-      .drag-column-header,
-      .is-moved,
-      .drag-options {
-        background: $on-hold;
-      }
-    }
-
-    &-in-progress {
-      .drag-column-header,
-      .is-moved,
-      .drag-options {
-        background: $in-progress;
-      }
-    }
-
-    &-needs-review {
-      .drag-column-header,
-      .is-moved,
-      .drag-options{
-        background: $needs-review;
-      }
-    }
-
-    &-approved {
-      .drag-column-header,
-      .is-moved,
-      .drag-options {
-        background: $approved;
-      }
-    }
-  }
-
-  .section {
-    padding: 20px;
-    text-align: center;
-
-    a {
-      color: white;
-      text-decoration: none;
-      font-weight: 300;
-    }
-
-    h4 {
-      font-weight: 400;
-      a {
-        font-weight: 600;
-      }
-    }
-  }
+  @import './assets/main.scss';
 </style>

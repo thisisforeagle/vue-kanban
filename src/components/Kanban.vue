@@ -48,7 +48,11 @@
 
     methods: {
       getBlocks(status) {
-        return this.localBlocks.filter(block => block.status === status);
+        let result = [];
+        if (this.localBlocks.length > 0) {
+          result = this.localBlocks.filter(block => block.status === status);
+        }
+        return result;
       },
     },
 

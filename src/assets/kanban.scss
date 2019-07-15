@@ -32,10 +32,11 @@ ul.drag-list, ul.drag-inner-list {
     }
 
     h2 {
-        font-size: 0.8rem;
+        font-size: 1.4rem;
         margin: 0;
-        text-transform: uppercase;
+        text-transform: capitalize;
         font-weight: 600;
+        color: white;
     }
 }
 
@@ -57,6 +58,15 @@ ul.drag-list, ul.drag-inner-list {
     height: 100px;
     background: rgba(black, 0.4);
     transition: $ease-out;
+
+    .title {
+        max-height: 65px;
+        overflow: hidden;
+    }
+    .description {
+        max-height: 65px;
+        overflow: hidden;
+    }
 
     &.is-moving {
         transform: scale(1.5);

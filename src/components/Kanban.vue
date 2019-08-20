@@ -4,10 +4,10 @@
       <li v-for="stage in stages" class="drag-column" :class="{['drag-column-' + stage]: true}" :key="stage">
         <span class="drag-column-header">
           <h2>{{ stage }} ({{ count(stage) }})</h2>
+          <div class="inline-loader" :class="{ 'loader': isLoading }"></div>
         </span>
         <div class="drag-options"></div>
         <ul class="drag-inner-list" ref="list" :data-status="stage">
-          <div :class="{ 'loader': isLoading }"></div>
           <li class="drag-item" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
             <slot :name="block.id">
               <strong>{{ block.status }}</strong>
@@ -16,7 +16,7 @@
           </li>
         </ul>
         <div class="drag-column-footer">
-            <slot :name="`footer-${stage}`"></slot>
+          <slot :name="`footer-${stage}`"></slot>
         </div>
       </li>
     </ul>
@@ -73,9 +73,12 @@
         this.completedblocks = _.groupBy(this.blocks, 'completed');
       },
       count(status) {
-        const count = _.groupBy(this.blocks, status);
-        console.log('Status: '+ status +'\nCount: ',Object.keys(count).length);
-        return Object.keys(count).length;
+        if (this.blocks.length > 0) {
+          const count = _.groupBy(this.blocks, (block) => { block.status == status });
+          console.log(count);
+          console.log('Status: '+ status +'\nCount: ',count[Object.keys(count)[0]]);
+          return count[Object.keys(count)[0]].length;
+        }
       }
     },
 

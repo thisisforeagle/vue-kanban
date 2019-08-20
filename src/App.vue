@@ -53,6 +53,12 @@
                 <input v-model="newblock.title" type="text" class="form-control" id="exampleInputEmail1"
                   placeholder="Give the task a name">
               </div>
+              <div class="form-group" v-if="isEditing">
+                <label for="sel1">Change Status:</label>
+                <select class="form-control" v-model="newblock.status">
+                  <option v-for="status in statuses">{{ status }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="Description">Description</label>
                 <textarea v-model="newblock.description" type="text" class="form-control" id="Description"
@@ -77,9 +83,9 @@
 
   const API_KEY = '5d5845bef3894120866b5861';
 
-  $.ajaxPrefilter(function (options) {
+  $.ajaxPrefilter((options) => {
     if (!options.beforeSend) {
-      options.beforeSend = function (xhr) {
+      options.beforeSend = (xhr) => {
         xhr.setRequestHeader('x-apikey', API_KEY);
       }
     }
@@ -124,7 +130,6 @@
         this.update(blocktoupdate);
       }, 500),
       addBlock: debounce(function () {
-
         this.newblock.id = this.blocks.length;
         this.newblock.date = new Date();
 
@@ -134,6 +139,7 @@
           title: this.newblock.title,
           description: this.newblock.description,
         });
+
         this.store();
         $('#modal').modal('hide');
       }, 500),
@@ -158,7 +164,7 @@
           url: 'https://kanban-a82d.restdb.io/rest/kanban',
           contentType: "application/json",
           data: JSON.stringify(this.newblock)
-        }).done(function (result) {
+        }).done((result) => {
           console.log("Saved", result);
         });
         this.clearNewBlock();
@@ -166,13 +172,16 @@
         this.getBlocks();
       },
       update(block) {
+        this.isLoading = true;
         $.ajax({
           type: "PUT",
           url: 'https://kanban-a82d.restdb.io/rest/kanban/' + block._id,
           contentType: "application/json",
           data: JSON.stringify(block)
-        }).done(function (result) {
+        }).done((result) => {
           console.log("Updated", result);
+          this.clearNewBlock();
+          this.getBlocks();
         });
       },
       clearNewBlock() {

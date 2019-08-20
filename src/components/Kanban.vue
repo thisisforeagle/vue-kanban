@@ -3,12 +3,11 @@
     <ul class="drag-list">
       <li v-for="stage in stages" class="drag-column" :class="{['drag-column-' + stage]: true}" :key="stage">
         <span class="drag-column-header">
-          <slot :name="stage">
-            <h2>{{ stage }}</h2>
-          </slot>
+          <h2>{{ stage }} ({{ count(stage) }})</h2>
         </span>
         <div class="drag-options"></div>
         <ul class="drag-inner-list" ref="list" :data-status="stage">
+          <div :class="{ 'loader': isLoading }"></div>
           <li class="drag-item" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
             <slot :name="block.id">
               <strong>{{ block.status }}</strong>
@@ -31,29 +30,53 @@
     name: 'KanbanBoard',
 
     props: {
-      stages: {},
-      blocks: {},
+      stages: Array,
+      blocks: Array,
+      isLoading: Boolean,
+      stage: String
     },
     data() {
       return {
-
+        newblocks: [],
+        inprogressblocks: [],
+        needsreviewblocks: [],
+        completedblocks: [],
       };
     },
-
+    watch: {
+      blocks () {
+        console.log('Blocks from parent: ',this.blocks);
+      },
+      isLoading () {
+        console.log('Loading: ', this.isLoading);
+      }
+    },
     computed: {
       localBlocks() {
         return this.blocks;
       },
     },
-
     methods: {
       getBlocks(status) {
         let result = [];
-        if (this.localBlocks.length > 0) {
-          result = this.localBlocks.filter(block => block.status === status);
-        }
+        result = this.blocks.filter(block => block.status === status);
+        
         return result;
       },
+      editBlock (block) {
+        this.$emit('editBlock', block);
+      },
+      groupBlocks () {
+        this.newblocks = _.groupBy(this.blocks, 'new');
+        this.inprogressblocks = _.groupBy(this.blocks, 'in-progress');
+        this.needsreviewblocks = _.groupBy(this.blocks, 'needs-review');
+        this.completedblocks = _.groupBy(this.blocks, 'completed');
+      },
+      count(status) {
+        const count = _.groupBy(this.blocks, status);
+        console.log('Status: '+ status +'\nCount: ',Object.keys(count).length);
+        return Object.keys(count).length;
+      }
     },
 
     mounted() {

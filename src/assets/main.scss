@@ -1,6 +1,6 @@
 $new: rgb(168, 1, 1);
-$in-progress: #2A92BF;
-$needs-review: rgb(226, 109, 0);
+$in-progress: rgb(226, 109, 0);
+$needs-review: #deb900;
 $completed: #00B961;
 
 body {
@@ -8,6 +8,31 @@ body {
   font-weight: 300;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+  
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #757575;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-left: 40%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .drag-column {
@@ -71,16 +96,35 @@ body {
   text-align: center;
 
   a {
+    font-size: 1.4rem;
+    margin: 0;
+    text-transform: capitalize;
+    font-weight: 600;
     color: white;
+    text-decoration: underline;
+  }
+  .btn {
     text-decoration: none;
-    font-weight: 300;
   }
 
-  h4 {
+  h1 {
     font-weight: 400;
     color: white;
     a {
       font-weight: 600;
+    }
+  }
+}
+
+.debug {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+#modal {
+  .modal-body {
+    textarea.form-control {
+      height: 200px;
     }
   }
 }

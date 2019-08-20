@@ -14,9 +14,13 @@ ul.drag-list, ul.drag-inner-list {
 .drag-list {
     display: flex;
     align-items: flex-start;
-
-    @media (max-width: 690px) {
-        display: block;
+}
+@media (max-width: 690px) {
+    .drag-list {
+        display: block !important;
+    }
+    .drag-column {
+        margin-bottom: 30px !important;
     }
 }
 
@@ -26,10 +30,7 @@ ul.drag-list, ul.drag-inner-list {
     position: relative;
     background: rgba(black, 0.2);
     overflow: hidden;
-
-    @media (max-width: 690px) {
-        margin-bottom: 30px;
-    }
+    border-radius: 10px;
 
     h2 {
         font-size: 1.4rem;
@@ -55,13 +56,21 @@ ul.drag-list, ul.drag-inner-list {
 .drag-item {
     padding: 10px;
     margin: 10px;
-    height: 100px;
+    height: 130px;
     background: rgba(black, 0.4);
     transition: $ease-out;
+    border-radius: 10px;
+
+    &:hover {
+        cursor: pointer;
+        border: 2px solid green;
+    }
 
     .title {
         max-height: 65px;
         overflow: hidden;
+        border-bottom: 1px solid #e4e4e4;
+        padding-bottom: 5px;
     }
     .description {
         max-height: 65px;

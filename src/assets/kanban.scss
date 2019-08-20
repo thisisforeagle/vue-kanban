@@ -66,15 +66,33 @@ ul.drag-list, ul.drag-inner-list {
         border: 2px solid green;
     }
 
+
     .title {
         max-height: 65px;
         overflow: hidden;
         border-bottom: 1px solid #e4e4e4;
         padding-bottom: 5px;
+
+        .title-container {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            .title-text {
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+        
     }
     .description {
         max-height: 65px;
         overflow: hidden;
+    }        
+    .hours {
+        float: right;
+        font-size: 2.9em;
+        line-height: 1em;
     }
 
     &.is-moving {

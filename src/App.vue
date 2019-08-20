@@ -17,8 +17,15 @@
       </div>
       <div v-for="item in blocks" :slot="item.id" :key="item.id" @click="editBlock(item)">
         <div class="title">
-          <strong>{{ item.title }}</strong><br>
-          <i :title="item.date | date">{{ time_ago(item.date) }}</i>
+          <div class="row">
+            <div class="col-xs-8 title-container">
+              <strong class="title-text">{{ item.title }}</strong><br>
+              <i :title="item.date | date">{{ time_ago(item.date) }}</i>
+            </div>
+            <div class="col-xs-4">
+              <span class="hours">{{ item.hours.split(' ')[0] }}</span>
+            </div>
+          </div> 
         </div>
         <div class="description">
             <span style="white-space: pre-line">{{ item.description }}</span>
@@ -57,6 +64,12 @@
                 <label for="sel1">Change Status:</label>
                 <select class="form-control" v-model="newblock.status">
                   <option v-for="status in statuses">{{ status }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sel1">Estimated Time:</label>
+                <select class="form-control" v-model="newblock.hours">
+                  <option v-for="time in times">{{ time }} hours</option>
                 </select>
               </div>
               <div class="form-group">
@@ -99,13 +112,15 @@
     data() {
       return {
         statuses: ['new', 'in-progress', 'needs-review', 'completed'],
+        times: [1,2,3,4,5,6,7,8],
         blocks: [],
         newblock: {
           date: new Date(),
           id: 0,
           title: '',
           description: '',
-          status: 'new'
+          status: 'new',
+          hours: 0
         },
         isEditing: false,
         isLoading: true,
@@ -138,6 +153,7 @@
           status: this.newblock.status,
           title: this.newblock.title,
           description: this.newblock.description,
+          hours: this.newblock.hours
         });
 
         this.store();
@@ -186,8 +202,12 @@
       },
       clearNewBlock() {
         this.newblock = {
+          date: new Date(),
+          id: 0,
           title: '',
           description: '',
+          status: 'new',
+          hours: 0,
         };
       },
       async getBlocks() {

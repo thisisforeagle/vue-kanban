@@ -74,10 +74,14 @@
       },
       count(status) {
         if (this.blocks.length > 0) {
-          const count = _.groupBy(this.blocks, (block) => { block.status == status });
-          console.log(count);
-          console.log('Status: '+ status +'\nCount: ',count[Object.keys(count)[0]]);
-          return count[Object.keys(count)[0]].length;
+          const count = _.groupBy(this.blocks, 'status');
+          let res = 0;
+
+          if (count[status] ) {
+            res = count[status].length;
+          }
+          
+          return res;
         }
       }
     },
